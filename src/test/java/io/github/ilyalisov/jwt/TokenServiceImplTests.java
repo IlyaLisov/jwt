@@ -1,5 +1,5 @@
-import io.github.ilyalisov.jwt.TokenParameters;
-import io.github.ilyalisov.jwt.TokenServiceImpl;
+package io.github.ilyalisov.jwt;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,5 @@
-import io.github.ilyalisov.jwt.TokenParameters;
+package io.github.ilyalisov.jwt;
+
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
