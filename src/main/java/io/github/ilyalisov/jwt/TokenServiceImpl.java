@@ -1,6 +1,7 @@
 package io.github.ilyalisov.jwt;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -48,14 +49,18 @@ public class TokenServiceImpl implements TokenService {
     public boolean isExpired(
             final String token
     ) {
-        Jws<Claims> claims = Jwts
-                .parser()
-                .verifyWith(key)
-                .build()
-                .parseSignedClaims(token);
-        return claims.getPayload()
-                .getExpiration()
-                .before(new Date());
+        try {
+            Jws<Claims> claims = Jwts
+                    .parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(token);
+            return claims.getPayload()
+                    .getExpiration()
+                    .before(new Date());
+        } catch (ExpiredJwtException e) {
+            return true;
+        }
     }
 
     @Override
