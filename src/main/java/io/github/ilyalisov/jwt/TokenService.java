@@ -1,3 +1,5 @@
+package io.github.ilyalisov.jwt;
+
 import java.util.Map;
 
 public interface TokenService {

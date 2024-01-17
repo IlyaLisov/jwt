@@ -1,3 +1,5 @@
+package io.github.ilyalisov.jwt;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,7 +38,7 @@ public class TokenParameters {
     private Date expiredAt;
 
     /**
-     * Creates a builder for TokenParameters.
+     * Creates a builder for io.github.ilyalisov.jwt.TokenParameters.
      *
      * @param subject  sub of JWT token
      * @param duration duration between token issuing and expiration date
@@ -129,7 +131,7 @@ public class TokenParameters {
         /**
          * Builds final object.
          *
-         * @return TokenParameters object
+         * @return io.github.ilyalisov.jwt.TokenParameters object
          */
         public TokenParameters build() {
             return new TokenParameters(

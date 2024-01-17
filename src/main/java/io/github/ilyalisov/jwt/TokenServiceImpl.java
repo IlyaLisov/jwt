@@ -1,3 +1,5 @@
+package io.github.ilyalisov.jwt;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -10,10 +12,13 @@ import java.util.Map;
 
 public class TokenServiceImpl implements TokenService {
 
+    /**
+     * Secret key for verifying JWT token.
+     */
     private final SecretKey key;
 
     /**
-     * Creates TokenServiceImpl object.
+     * Creates io.github.ilyalisov.jwt.TokenServiceImpl object.
      *
      * @param secret secret of key for JWT token generation
      */

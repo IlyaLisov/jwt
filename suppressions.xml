@@ -3,4 +3,6 @@
 <suppressions>
     <suppress checks="JavadocPackage"/>
     <suppress checks="MagicNumber"/>
+    <suppress checks="DesignForExtension"/>
+    <suppress checks="HiddenField"/>
 </suppressions>
