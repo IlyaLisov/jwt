@@ -4,6 +4,8 @@
 [![Hits-of-Code](https://hitsofcode.com/github/ilyalisov/jwt?branch=main)](https://hitsofcode.com/github/ilyalisov/jwt/view?branch=main)
 [![mvn](https://github.com/ilyalisov/jwt/actions/workflows/maven-build.yml/badge.svg)](https://github.com/ilyalisov/jwt/actions/workflows/maven-build.yml)
 
+[![codecov](https://codecov.io/gh/IlyaLisov/jwt/graph/badge.svg?token=OJR6TFQ2qr)](https://codecov.io/gh/IlyaLisov/jwt)
+
 This repository is an open-source Java library for fast and convenient using of
 JWT tokens in your Java applications.
 
