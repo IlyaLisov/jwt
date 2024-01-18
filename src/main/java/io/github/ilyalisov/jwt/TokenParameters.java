@@ -10,6 +10,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Parameters for JWT token generation.
+ */
 @Builder(
         builderMethodName = "hiddenBuilder",
         access = AccessLevel.PRIVATE

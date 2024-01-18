@@ -2,6 +2,9 @@ package io.github.ilyalisov.jwt;
 
 import java.util.Map;
 
+/**
+ * Interface of TokenService.
+ */
 public interface TokenService {
 
     /**
