@@ -2,7 +2,8 @@ assets:
   settings.xml: ilyalisov/secrets#assets/settings.xml
   secring.gpg: ilyalisov/secrets#assets/secring.gpg
   pubring.gpg: ilyalisov/secrets#assets/pubring.gpg
-
+docker:
+  image: l3r8y/rultor-image:1.0.3
 release:
   pre: false
   sensetive:
