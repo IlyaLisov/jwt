@@ -24,8 +24,15 @@ JWT tokens in your Java applications.
 
 At first, you need to install this library.
 
-Until we publish it to Maven Central, you need to download source code, compile
-it with `mvn package` and add `jwt-***.jar` as a dependency to your project.
+With Maven add dependency to your `pom.xml`.
+
+```xml
+<dependency>
+  <groupId>io.github.ilyalisov</groupId>
+  <artifactId>jwt</artifactId>
+  <version>0.1.0</version>
+</dependency>
+```
 
 This library provides simple and convenient usage.
 
