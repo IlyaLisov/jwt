@@ -44,6 +44,7 @@
         <checkstyle.version>3.2.2</checkstyle.version>
         <junit-version>5.10.1</junit-version>
         <jacoco.version>0.8.11</jacoco.version>
+        <jedis.version>5.1.0</jedis.version>
     </properties>
     <dependencies>
         <dependency>
@@ -74,6 +75,11 @@
             <artifactId>junit-jupiter-api</artifactId>
             <version>${junit-version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>${jedis.version}</version>
         </dependency>
     </dependencies>
     <build>

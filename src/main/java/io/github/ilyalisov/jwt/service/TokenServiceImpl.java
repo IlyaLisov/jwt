@@ -1,5 +1,6 @@
-package io.github.ilyalisov.jwt;
+package io.github.ilyalisov.jwt.service;
 
+import io.github.ilyalisov.jwt.config.TokenParameters;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -22,7 +23,12 @@ public class TokenServiceImpl implements TokenService {
     private final SecretKey key;
 
     /**
-     * Creates io.github.ilyalisov.jwt.TokenServiceImpl object.
+     * Name of field in JWT token for its type.
+     */
+    public static final String TOKEN_TYPE_KEY = "tokenType";
+
+    /**
+     * Creates an object.
      *
      * @param secret secret of key for JWT token generation
      */
@@ -39,6 +45,7 @@ public class TokenServiceImpl implements TokenService {
         Claims claims = Jwts.claims()
                 .subject(params.getSubject())
                 .add(params.getClaims())
+                .add(TOKEN_TYPE_KEY, params.getType())
                 .build();
         return Jwts.builder()
                 .claims(claims)
@@ -93,6 +100,19 @@ public class TokenServiceImpl implements TokenService {
                 .parseSignedClaims(token)
                 .getPayload()
                 .getSubject();
+    }
+
+    @Override
+    public String getType(
+            final String token
+    ) {
+        return Jwts
+                .parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get(TOKEN_TYPE_KEY, String.class);
     }
 
     @Override
