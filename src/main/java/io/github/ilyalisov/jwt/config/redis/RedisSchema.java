@@ -1,5 +1,8 @@
 package io.github.ilyalisov.jwt.config.redis;
 
+/**
+ * Schema interface for RedisTokenStorageImpl.
+ */
 public interface RedisSchema {
 
     /**

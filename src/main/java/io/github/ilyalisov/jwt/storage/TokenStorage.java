@@ -2,6 +2,9 @@ package io.github.ilyalisov.jwt.storage;
 
 import io.github.ilyalisov.jwt.config.TokenParameters;
 
+/**
+ * TokenStorage interface.
+ */
 public interface TokenStorage {
 
     /**

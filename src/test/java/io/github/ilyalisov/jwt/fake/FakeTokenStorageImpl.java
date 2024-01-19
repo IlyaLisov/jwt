@@ -1,33 +1,31 @@
-package io.github.ilyalisov.jwt.storage;
+package io.github.ilyalisov.jwt.fake;
 
 import io.github.ilyalisov.jwt.config.TokenParameters;
+import io.github.ilyalisov.jwt.storage.TokenStorage;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Basic implementation of TokenStorage.
- */
-public class TokenStorageImpl implements TokenStorage {
+public class FakeTokenStorageImpl implements TokenStorage {
 
-    /**
-     * Inner map of key-value pairs.
-     */
-    private final Map<String, String> tokens;
-
-    /**
-     * Creates an object.
-     */
-    public TokenStorageImpl(
-    ) {
-        this.tokens = new HashMap<>();
-    }
+    private final Map<String, String> tokens = new HashMap<>();
 
     private String subjectTokenKey(
             final String subject,
             final String type
     ) {
         return "tokens:" + subject + ":" + type;
+    }
+
+    @Override
+    public String get(
+            final TokenParameters params
+    ) {
+        String tokenKey = subjectTokenKey(
+                params.getSubject(),
+                params.getType()
+        );
+        return tokens.get(tokenKey);
     }
 
     @Override
@@ -39,7 +37,6 @@ public class TokenStorageImpl implements TokenStorage {
                 params.getSubject(),
                 params.getType()
         );
-        //TODO invalidate tokens - set expiration time
         tokens.put(tokenKey, token);
     }
 
@@ -53,17 +50,6 @@ public class TokenStorageImpl implements TokenStorage {
                 params.getType()
         );
         return token.equals(tokens.get(tokenKey));
-    }
-
-    @Override
-    public String get(
-            final TokenParameters params
-    ) {
-        String tokenKey = subjectTokenKey(
-                params.getSubject(),
-                params.getType()
-        );
-        return tokens.get(tokenKey);
     }
 
 }

@@ -1,6 +1,9 @@
-package io.github.ilyalisov.jwt;
+package io.github.ilyalisov.jwt.service;
 
-import org.junit.jupiter.api.BeforeAll;
+import io.github.ilyalisov.jwt.config.TokenParameters;
+import io.github.ilyalisov.jwt.fake.FakeTokenStorageImpl;
+import io.github.ilyalisov.jwt.storage.TokenStorage;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -12,23 +15,29 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class TokenServiceImplTests {
+class PersistentTokenServiceImplTests {
 
     private static final String SECRET_KEY = "c29tZWxvbmdzZWNyZXRzdHJpbmdmb3JleGFtcGxlYW5kaXRuZWVkc3RvYmVsb25nDQo=";
-    private static TokenServiceImpl tokenService;
+    private static PersistentTokenServiceImpl tokenService;
 
-    @BeforeAll
-    static void setup() {
-        tokenService = new TokenServiceImpl(SECRET_KEY);
+    @BeforeEach
+    void setup() {
+        TokenStorage tokenStorage = new FakeTokenStorageImpl();
+        tokenService = new PersistentTokenServiceImpl(
+                SECRET_KEY,
+                tokenStorage
+        );
     }
 
     @Test
     void shouldGenerateValidToken() {
         String subject = "testSubject";
+        String type = "any";
         Duration duration = Duration.ofMinutes(30);
 
         TokenParameters params = TokenParameters.builder(
                         subject,
+                        type,
                         duration
                 )
                 .build();
@@ -39,12 +48,33 @@ class TokenServiceImplTests {
     }
 
     @Test
-    void isExpiredWithValidTokenShouldReturnFalse() {
+    void withExistingTokenShouldReturnExistingToken() {
         String subject = "testSubject";
+        String type = "any";
         Duration duration = Duration.ofMinutes(30);
 
         TokenParameters params = TokenParameters.builder(
                         subject,
+                        type,
+                        duration
+                )
+                .build();
+        String existingToken = tokenService.create(params);
+
+        String token = tokenService.create(params);
+
+        assertEquals(existingToken, token);
+    }
+
+    @Test
+    void withValidTokenShouldReturnFalse() {
+        String subject = "testSubject";
+        String type = "any";
+        Duration duration = Duration.ofMinutes(30);
+
+        TokenParameters params = TokenParameters.builder(
+                        subject,
+                        type,
                         duration
                 )
                 .build();
@@ -54,16 +84,18 @@ class TokenServiceImplTests {
     }
 
     @Test
-    void isExpiredWithExpiredTokenShouldReturnTrue() {
+    void withExpiredTokenShouldReturnTrue() {
         String subject = "testSubject";
+        String type = "any";
         Duration duration = Duration.ofSeconds(1);
 
         TokenParameters params = TokenParameters.builder(
                         subject,
+                        type,
                         duration
                 )
                 .build();
-        String token = tokenService.create(params);
+        String expiredToken = tokenService.create(params);
 
         try {
             Thread.sleep(2000);
@@ -71,42 +103,54 @@ class TokenServiceImplTests {
             e.printStackTrace();
         }
 
-        assertTrue(tokenService.isExpired(token));
+        assertTrue(tokenService.isExpired(expiredToken));
     }
 
     @Test
     void withValidClaimShouldReturnTrue() {
         String subject = "testSubject";
+        String type = "any";
         Duration duration = Duration.ofMinutes(30);
 
-        TokenParameters params = TokenParameters.builder(subject, duration)
+        TokenParameters params = TokenParameters.builder(
+                        subject,
+                        type,
+                        duration
+                )
                 .claim("testKey", "testValue")
                 .build();
-
         String token = tokenService.create(params);
+
         assertTrue(tokenService.has(token, "testKey", "testValue"));
     }
 
     @Test
     void withInvalidClaimShouldReturnFalse() {
         String subject = "testSubject";
+        String type = "any";
         Duration duration = Duration.ofMinutes(30);
 
-        TokenParameters params = TokenParameters.builder(subject, duration)
+        TokenParameters params = TokenParameters.builder(
+                        subject,
+                        type,
+                        duration
+                )
                 .claim("testKey", "testValue")
                 .build();
-
         String token = tokenService.create(params);
+
         assertFalse(tokenService.has(token, "testKey", "invalidValue"));
     }
 
     @Test
     void shouldReturnCorrectSubject() {
         String subject = "testSubject";
+        String type = "any";
         Duration duration = Duration.ofMinutes(30);
 
         TokenParameters params = TokenParameters.builder(
                         subject,
+                        type,
                         duration
                 )
                 .build();
@@ -116,21 +160,44 @@ class TokenServiceImplTests {
     }
 
     @Test
+    void shouldReturnCorrectType() {
+        String subject = "testSubject";
+        String type = "any";
+        Duration duration = Duration.ofMinutes(30);
+
+        TokenParameters params = TokenParameters.builder(
+                        subject,
+                        type,
+                        duration
+                )
+                .build();
+        String token = tokenService.create(params);
+
+        assertEquals(type, tokenService.getType(token));
+    }
+
+    @Test
     void shouldReturnCorrectClaims() {
         String subject = "testSubject";
+        String type = "any";
         Duration duration = Duration.ofMinutes(30);
         Map<String, Object> customClaims = new HashMap<>();
         customClaims.put("key1", "value1");
         customClaims.put("key2", 123);
 
-        TokenParameters params = TokenParameters.builder(subject, duration)
+        TokenParameters params = TokenParameters.builder(
+                        subject,
+                        type,
+                        duration
+                )
                 .claims(customClaims)
                 .build();
-
         String token = tokenService.create(params);
+
         Map<String, Object> claims = tokenService.claims(token);
 
         assertNotNull(claims);
+        System.out.println(claims.get("key1"));
         assertEquals("value1", claims.get("key1"));
         assertEquals(123, claims.get("key2"));
     }
