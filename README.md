@@ -82,22 +82,20 @@ public class Main {
 
 With Redis you need to pass `RedisTokenStorageImpl` object to constructor.
 
-To create `RedisTokenStorageImpl` you need to pass JedisPool
+To create `RedisTokenStorageImpl` you need to pass `JedisPool` / host and port /
+host, port, username and password.
 
 ```java
 public class Main {
     public static void main(String[] args) {
         String secret = "c29tZWxvbmdzZWNyZXRzdHJpbmdmb3JleGFtcGxlYW5kaXRuZWVkc3RvYmVsb25nDQo=";
+        String host = "localhost";
+        int port = 6379;
 
-        JedisPoolConfig config = new JedisPoolConfig();
-        config.setJmxEnabled(false);
-        JedisPool jedisPool = new JedisPool(
-                config,
-                "localhost",
-                6379
+        TokenStorage tokenStorage = new RedisTokenStorageImpl(
+                host,
+                port
         );
-
-        TokenStorage tokenStorage = new RedisTokenStorageImpl(jedisPool);
 
         TokenService tokenService = new PersistentTokenServiceImpl(
                 secret,
