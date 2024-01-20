@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Parameters for JWT token generation.
+ * Parameters of JWT token.
  */
 @Builder(
         builderMethodName = "hiddenBuilder",
@@ -41,14 +41,14 @@ public class TokenParameters {
     private Date expiredAt;
 
     /**
-     * Type of JWT token.
+     * Type of JWT token. Used to distinguish them.
      */
     private String type;
 
     /**
      * Creates a builder for TokenParameters.
      *
-     * @param subject  sub of JWT token
+     * @param subject  "sub" of JWT token
      * @param type     type of JWT token
      * @param duration duration between token issuing and expiration date
      * @return TokenParametersBuilder
@@ -73,7 +73,7 @@ public class TokenParameters {
     public static class TokenParametersBuilder {
 
         /**
-         * Add claims to parameters.
+         * Adds claim to parameters.
          *
          * @param key   the key of claim
          * @param value the value of claim
@@ -150,7 +150,7 @@ public class TokenParameters {
         /**
          * Builds final object.
          *
-         * @return TokenParameters object
+         * @return TokenParameters
          */
         public TokenParameters build() {
             return new TokenParameters(

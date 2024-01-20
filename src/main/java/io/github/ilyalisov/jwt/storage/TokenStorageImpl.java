@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Basic implementation of TokenStorage.
+ * Basic implementation of TokenStorage. Not thread-safe.
  */
 public class TokenStorageImpl implements TokenStorage {
 
