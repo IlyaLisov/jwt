@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Basic implementation of TokenService.
+ * Default implementation of TokenService.
  */
 public class TokenServiceImpl implements TokenService {
 

@@ -1,7 +1,7 @@
 package io.github.ilyalisov.jwt.config.redis;
 
 /**
- * Basic schema for RedisTokenStorageImpl.
+ * Default schema for RedisTokenStorageImpl.
  */
 public class DefaultRedisSchema implements RedisSchema {
 

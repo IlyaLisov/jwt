@@ -22,7 +22,7 @@ public class RedisTokenStorageImpl implements TokenStorage {
     private final RedisSchema redisSchema;
 
     /**
-     * Creates an object with provided JedisPool and DefaultRedisSchema.
+     * Creates an object.
      *
      * @param jedisPool JedisPool object
      */
@@ -34,7 +34,7 @@ public class RedisTokenStorageImpl implements TokenStorage {
     }
 
     /**
-     * Creates an object with provided JedisPool and RedisSchema.
+     * Creates an object.
      *
      * @param jedisPool   JedisPool object
      * @param redisSchema RedisSchema object

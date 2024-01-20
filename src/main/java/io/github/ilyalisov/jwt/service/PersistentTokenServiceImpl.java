@@ -30,12 +30,12 @@ public class PersistentTokenServiceImpl implements TokenService {
     private final TokenStorage tokenStorage;
 
     /**
-     * Name of field in JWT token for its type.
+     * Name of field in JWT token for token type.
      */
     public static final String TOKEN_TYPE_KEY = "tokenType";
 
     /**
-     * Creates an object with provided secret and TokenStorageImpl.
+     * Creates an object.
      *
      * @param secret secret of key for JWT token generation
      */

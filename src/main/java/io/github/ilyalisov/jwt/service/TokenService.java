@@ -10,7 +10,7 @@ import java.util.Map;
 public interface TokenService {
 
     /**
-     * Creates JWT token by provided parameters.
+     * Creates JWT token with provided parameters.
      *
      * @param params parameters for JWT token
      * @return JWT token
@@ -20,7 +20,7 @@ public interface TokenService {
     );
 
     /**
-     * Checks whether JWT token is expired by current time.
+     * Checks if JWT token is expired by current time.
      *
      * @param token JWT token to be checked
      * @return true - if JWT token expired, false - otherwise
@@ -30,7 +30,7 @@ public interface TokenService {
     );
 
     /**
-     * Checks whether JWT token has a key-value pair in payload.
+     * Checks if JWT token has a key-value pair in payload.
      *
      * @param token JWT token
      * @param key   key of payload
