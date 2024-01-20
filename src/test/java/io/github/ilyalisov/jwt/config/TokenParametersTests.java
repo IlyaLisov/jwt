@@ -1,4 +1,4 @@
-package io.github.ilyalisov.jwt;
+package io.github.ilyalisov.jwt.config;
 
 import org.junit.jupiter.api.Test;
 
@@ -19,6 +19,7 @@ class TokenParametersTests {
 
         TokenParameters tokenParameters = TokenParameters.builder(
                         subject,
+                        "any",
                         duration
                 )
                 .build();
@@ -38,6 +39,7 @@ class TokenParametersTests {
 
         TokenParameters tokenParameters = TokenParameters.builder(
                         subject,
+                        "any",
                         duration
                 )
                 .issuedAt(issuedAt)
@@ -55,6 +57,7 @@ class TokenParametersTests {
 
         TokenParameters tokenParameters = TokenParameters.builder(
                         subject,
+                        "any",
                         duration
                 )
                 .expiredAt(expiredAt)
@@ -72,6 +75,7 @@ class TokenParametersTests {
 
         TokenParameters tokenParameters = TokenParameters.builder(
                         baseSubject,
+                        "any",
                         duration
                 )
                 .subject(subject)
@@ -90,6 +94,7 @@ class TokenParametersTests {
 
         TokenParameters tokenParameters = TokenParameters.builder(
                         subject,
+                        "any",
                         duration
                 )
                 .claim(key, value)
@@ -113,6 +118,7 @@ class TokenParametersTests {
 
         TokenParameters tokenParameters = TokenParameters.builder(
                         subject,
+                        "any",
                         duration
                 )
                 .claims(claims)

@@ -1,7 +1,12 @@
-package io.github.ilyalisov.jwt;
+package io.github.ilyalisov.jwt.service;
+
+import io.github.ilyalisov.jwt.config.TokenParameters;
 
 import java.util.Map;
 
+/**
+ * Interface of TokenService.
+ */
 public interface TokenService {
 
     /**
@@ -46,6 +51,16 @@ public interface TokenService {
      * @return "sub" of JWT token
      */
     String getSubject(
+            String token
+    );
+
+    /**
+     * Returns type of JWT token.
+     *
+     * @param token JWT token
+     * @return type of JWT token
+     */
+    String getType(
             String token
     );
 

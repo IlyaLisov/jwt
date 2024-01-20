@@ -1,4 +1,4 @@
-package io.github.ilyalisov.jwt;
+package io.github.ilyalisov.jwt.config;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,6 +10,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Parameters for JWT token generation.
+ */
 @Builder(
         builderMethodName = "hiddenBuilder",
         access = AccessLevel.PRIVATE
@@ -38,19 +41,27 @@ public class TokenParameters {
     private Date expiredAt;
 
     /**
-     * Creates a builder for io.github.ilyalisov.jwt.TokenParameters.
+     * Type of JWT token.
+     */
+    private String type;
+
+    /**
+     * Creates a builder for TokenParameters.
      *
      * @param subject  sub of JWT token
+     * @param type     type of JWT token
      * @param duration duration between token issuing and expiration date
      * @return TokenParametersBuilder
      */
     public static TokenParametersBuilder builder(
             final String subject,
+            final String type,
             final Duration duration
     ) {
         Date issuedAt = new Date();
         return hiddenBuilder()
                 .claims(new HashMap<>())
+                .type(type)
                 .issuedAt(issuedAt)
                 .subject(subject)
                 .expiredAt(new Date(
@@ -139,14 +150,15 @@ public class TokenParameters {
         /**
          * Builds final object.
          *
-         * @return io.github.ilyalisov.jwt.TokenParameters object
+         * @return TokenParameters object
          */
         public TokenParameters build() {
             return new TokenParameters(
                     claims,
                     subject,
                     issuedAt,
-                    expiredAt
+                    expiredAt,
+                    type
             );
         }
 
