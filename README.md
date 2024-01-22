@@ -283,7 +283,7 @@ object.
 
 ```java
 public class Main {
-    public void main(String[] args) {
+    public static void main(String[] args) {
         String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
         Map<String, Object> claims = tokenService.claims(token);
