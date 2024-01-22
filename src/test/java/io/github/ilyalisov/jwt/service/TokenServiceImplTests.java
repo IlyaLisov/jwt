@@ -1,5 +1,6 @@
-package io.github.ilyalisov.jwt;
+package io.github.ilyalisov.jwt.service;
 
+import io.github.ilyalisov.jwt.config.TokenParameters;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -25,10 +26,12 @@ class TokenServiceImplTests {
     @Test
     void shouldGenerateValidToken() {
         String subject = "testSubject";
+        String type = "any";
         Duration duration = Duration.ofMinutes(30);
 
         TokenParameters params = TokenParameters.builder(
                         subject,
+                        type,
                         duration
                 )
                 .build();
@@ -41,10 +44,12 @@ class TokenServiceImplTests {
     @Test
     void isExpiredWithValidTokenShouldReturnFalse() {
         String subject = "testSubject";
+        String type = "any";
         Duration duration = Duration.ofMinutes(30);
 
         TokenParameters params = TokenParameters.builder(
                         subject,
+                        type,
                         duration
                 )
                 .build();
@@ -56,10 +61,12 @@ class TokenServiceImplTests {
     @Test
     void isExpiredWithExpiredTokenShouldReturnTrue() {
         String subject = "testSubject";
+        String type = "any";
         Duration duration = Duration.ofSeconds(1);
 
         TokenParameters params = TokenParameters.builder(
                         subject,
+                        type,
                         duration
                 )
                 .build();
@@ -77,9 +84,14 @@ class TokenServiceImplTests {
     @Test
     void withValidClaimShouldReturnTrue() {
         String subject = "testSubject";
+        String type = "any";
         Duration duration = Duration.ofMinutes(30);
 
-        TokenParameters params = TokenParameters.builder(subject, duration)
+        TokenParameters params = TokenParameters.builder(
+                        subject,
+                        type,
+                        duration
+                )
                 .claim("testKey", "testValue")
                 .build();
 
@@ -90,9 +102,14 @@ class TokenServiceImplTests {
     @Test
     void withInvalidClaimShouldReturnFalse() {
         String subject = "testSubject";
+        String type = "any";
         Duration duration = Duration.ofMinutes(30);
 
-        TokenParameters params = TokenParameters.builder(subject, duration)
+        TokenParameters params = TokenParameters.builder(
+                        subject,
+                        type,
+                        duration
+                )
                 .claim("testKey", "testValue")
                 .build();
 
@@ -103,10 +120,12 @@ class TokenServiceImplTests {
     @Test
     void shouldReturnCorrectSubject() {
         String subject = "testSubject";
+        String type = "any";
         Duration duration = Duration.ofMinutes(30);
 
         TokenParameters params = TokenParameters.builder(
                         subject,
+                        type,
                         duration
                 )
                 .build();
@@ -116,14 +135,36 @@ class TokenServiceImplTests {
     }
 
     @Test
+    void shouldReturnCorrectType() {
+        String subject = "testSubject";
+        String type = "any";
+        Duration duration = Duration.ofMinutes(30);
+
+        TokenParameters params = TokenParameters.builder(
+                        subject,
+                        type,
+                        duration
+                )
+                .build();
+        String token = tokenService.create(params);
+
+        assertEquals(type, tokenService.getType(token));
+    }
+
+    @Test
     void shouldReturnCorrectClaims() {
         String subject = "testSubject";
+        String type = "any";
         Duration duration = Duration.ofMinutes(30);
         Map<String, Object> customClaims = new HashMap<>();
         customClaims.put("key1", "value1");
         customClaims.put("key2", 123);
 
-        TokenParameters params = TokenParameters.builder(subject, duration)
+        TokenParameters params = TokenParameters.builder(
+                        subject,
+                        type,
+                        duration
+                )
                 .claims(customClaims)
                 .build();
 

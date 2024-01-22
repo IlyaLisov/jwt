@@ -1,5 +1,8 @@
-package io.github.ilyalisov.jwt;
+package io.github.ilyalisov.jwt.service;
 
+import io.github.ilyalisov.jwt.config.TokenParameters;
+
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -8,7 +11,7 @@ import java.util.Map;
 public interface TokenService {
 
     /**
-     * Creates JWT token by provided parameters.
+     * Creates JWT token with provided parameters.
      *
      * @param params parameters for JWT token
      * @return JWT token
@@ -18,7 +21,7 @@ public interface TokenService {
     );
 
     /**
-     * Checks whether JWT token is expired by current time.
+     * Checks if JWT token is expired by current time.
      *
      * @param token JWT token to be checked
      * @return true - if JWT token expired, false - otherwise
@@ -28,7 +31,19 @@ public interface TokenService {
     );
 
     /**
-     * Checks whether JWT token has a key-value pair in payload.
+     * Checks whether JWT token is expired by provided time.
+     *
+     * @param token JWT token to be checked
+     * @param date  date to check expiration of JWT token
+     * @return true - if JWT token expired, false - otherwise
+     */
+    boolean isExpired(
+            String token,
+            Date date
+    );
+
+    /**
+     * Checks if JWT token has a key-value pair in payload.
      *
      * @param token JWT token
      * @param key   key of payload
@@ -49,6 +64,16 @@ public interface TokenService {
      * @return "sub" of JWT token
      */
     String getSubject(
+            String token
+    );
+
+    /**
+     * Returns type of JWT token.
+     *
+     * @param token JWT token
+     * @return type of JWT token
+     */
+    String getType(
             String token
     );
 
