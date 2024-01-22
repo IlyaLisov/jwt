@@ -14,6 +14,7 @@ JWT tokens in your Java applications.
 * [How to use](#how-to-use)
     * [Instantiate a service](#instantiate-a-service)
     * [Persist tokens](#persist-tokens)
+    * [Invalidate token](#invalidate-jwt-token)
     * [Create token](#create-jwt-token)
     * [If token is expired](#check-if-jwt-token-is-expired)
     * [If token has claim](#check-if-jwt-token-has-claim)
@@ -33,7 +34,7 @@ With Maven add dependency to your `pom.xml`.
 <dependency>
     <groupId>io.github.ilyalisov</groupId>
     <artifactId>jwt</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 
@@ -59,7 +60,7 @@ After, you can call available methods and use library.
 
 ### Persist tokens
 
-Library supports `PersistentTokenServiceImpl` implementation with saving
+Library supports `PersistentTokenService` implementation with saving
 tokens to `TokenStorage`.
 
 With such approach you can store tokens in Redis or in-memory Map and create new
@@ -97,7 +98,7 @@ public class Main {
                 port
         );
 
-        TokenService tokenService = new PersistentTokenServiceImpl(
+        PersistentTokenService tokenService = new PersistentTokenServiceImpl(
                 secret,
                 tokenStorage
         );
@@ -110,6 +111,43 @@ JWT token. Just pass it as argument in `RedisTokenStorageImpl` constructor.
 
 By default, library uses key `"tokens:" + subject + ":" + type`.
 
+### Invalidate JWT token
+
+With `PersistentTokenService` you can invalidate token by token itself or by
+subject and token type. If first option is chosen, all keys with such token
+values will be deleted.
+
+If token will be deleted from storage you receive `true`.
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+        boolean deleted = persistentTokenService.invalidate(token);
+
+        System.out.println(deleted);
+    }
+}
+```
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        boolean deleted = persistentTokenService.invalidate(
+                TokenParameters.builder(
+                                "user@example.com",
+                                "access",
+                                Duration.of(1, ChronoUnit.HOURS)
+                        )
+                        .build()
+        );
+
+        System.out.println(deleted);
+    }
+}
+```
+
 ### Create JWT token
 
 To create token call method `create(TokenParameters params)` on `TokenService`
@@ -121,6 +159,7 @@ public class Main {
         String token = tokenService.create(
                 TokenParameters.builder(
                                 "user@example.com",
+                                "access",
                                 Duration.of(1, ChronoUnit.HOURS)
                         )
                         .build()
@@ -152,6 +191,24 @@ class Main {
         String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
         boolean expired = tokenService.isExpired(token);
+
+        System.out.println(expired);
+    }
+}
+```
+
+You can also check expiration with any other date.
+
+```java
+class Main {
+    public static void main(String[] args) {
+        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+        Date date = new Date(1705911211182);
+
+        boolean expired = tokenService.isExpired(
+                token,
+                date
+        );
 
         System.out.println(expired);
     }
