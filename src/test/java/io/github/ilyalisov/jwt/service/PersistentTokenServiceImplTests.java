@@ -12,6 +12,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -197,9 +198,74 @@ class PersistentTokenServiceImplTests {
         Map<String, Object> claims = tokenService.claims(token);
 
         assertNotNull(claims);
-        System.out.println(claims.get("key1"));
         assertEquals("value1", claims.get("key1"));
         assertEquals(123, claims.get("key2"));
+    }
+
+    @Test
+    void shouldInvalidateByToken() {
+        String subject = "testSubject";
+        String type = "any";
+        Duration duration = Duration.ofMinutes(30);
+
+        TokenParameters params = TokenParameters.builder(
+                        subject,
+                        type,
+                        duration
+                )
+                .build();
+        String token = tokenService.create(params);
+
+        tokenService.invalidate(token);
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        TokenParameters newParams = TokenParameters.builder(
+                        subject,
+                        type,
+                        duration
+                )
+                .build();
+        String newToken = tokenService.create(newParams);
+        System.out.println(token);
+        System.out.println(newToken);
+        assertNotEquals(token, newToken);
+    }
+
+    @Test
+    void shouldInvalidateBySubjectAndType() {
+        String subject = "testSubject";
+        String type = "any";
+        Duration duration = Duration.ofMinutes(30);
+
+        TokenParameters params = TokenParameters.builder(
+                        subject,
+                        type,
+                        duration
+                )
+                .build();
+        String token = tokenService.create(params);
+
+        tokenService.invalidate(params);
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        TokenParameters newParams = TokenParameters.builder(
+                        subject,
+                        type,
+                        duration
+                )
+                .build();
+        String newToken = tokenService.create(newParams);
+        assertNotEquals(token, newToken);
     }
 
 }

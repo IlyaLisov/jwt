@@ -109,5 +109,54 @@ class TokenStorageImplTests {
 
         assertNull(tokenStorage.get(params));
     }
+
+    @Test
+    void shouldInvalidateByToken() {
+        String subject = "testSubject";
+        String type = "any";
+        Duration duration = Duration.ofMinutes(30);
+
+        TokenParameters params = TokenParameters.builder(
+                        subject,
+                        type,
+                        duration
+                )
+                .build();
+        String token = "testToken";
+        tokenStorage.save(
+                token,
+                params
+        );
+
+        tokenStorage.remove(token);
+
+        String existingToken = tokenStorage.get(params);
+        assertNull(existingToken);
+    }
+
+    @Test
+    void shouldInvalidateBySubjectAndType() {
+        String subject = "testSubject";
+        String type = "any";
+        Duration duration = Duration.ofMinutes(30);
+
+        TokenParameters params = TokenParameters.builder(
+                        subject,
+                        type,
+                        duration
+                )
+                .build();
+        String token = "testToken";
+        tokenStorage.save(
+                token,
+                params
+        );
+
+        tokenStorage.remove(params);
+
+        String existingToken = tokenStorage.get(params);
+        assertNull(existingToken);
+    }
+
 }
 
