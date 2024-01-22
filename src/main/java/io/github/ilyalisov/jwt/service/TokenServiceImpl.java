@@ -59,6 +59,17 @@ public class TokenServiceImpl implements TokenService {
     public boolean isExpired(
             final String token
     ) {
+        return isExpired(
+                token,
+                new Date()
+        );
+    }
+
+    @Override
+    public boolean isExpired(
+            final String token,
+            final Date date
+    ) {
         try {
             Jws<Claims> claims = Jwts
                     .parser()
@@ -67,7 +78,7 @@ public class TokenServiceImpl implements TokenService {
                     .parseSignedClaims(token);
             return claims.getPayload()
                     .getExpiration()
-                    .before(new Date());
+                    .before(date);
         } catch (ExpiredJwtException e) {
             return true;
         }
