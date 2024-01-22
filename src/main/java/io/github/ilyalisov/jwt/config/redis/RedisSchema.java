@@ -1,7 +1,8 @@
 package io.github.ilyalisov.jwt.config.redis;
 
 /**
- * Schema interface for RedisTokenStorageImpl.
+ * Schema interface for
+ * {@link io.github.ilyalisov.jwt.storage.RedisTokenStorageImpl}.
  */
 public interface RedisSchema {
 
@@ -10,7 +11,7 @@ public interface RedisSchema {
      *
      * @param subject "sub" of JWT token
      * @param type    token type
-     * @return key to store JWT token with
+     * @return Redis key
      */
     String subjectTokenKey(
             String subject,

@@ -231,8 +231,6 @@ class PersistentTokenServiceImplTests {
                 )
                 .build();
         String newToken = tokenService.create(newParams);
-        System.out.println(token);
-        System.out.println(newToken);
         assertNotEquals(token, newToken);
     }
 
