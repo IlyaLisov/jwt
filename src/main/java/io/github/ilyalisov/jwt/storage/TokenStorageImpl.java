@@ -66,4 +66,29 @@ public class TokenStorageImpl implements TokenStorage {
         return tokens.get(tokenKey);
     }
 
+    @Override
+    public boolean remove(
+            final String token
+    ) {
+        boolean deleted = false;
+        for (Map.Entry<String, String> entry : tokens.entrySet()) {
+            if (entry.getValue().equals(token)) {
+                tokens.remove(entry.getKey());
+                deleted = true;
+            }
+        }
+        return deleted;
+    }
+
+    @Override
+    public boolean remove(
+            final TokenParameters params
+    ) {
+        String tokenKey = subjectTokenKey(
+                params.getSubject(),
+                params.getType()
+        );
+        return tokens.remove(tokenKey) != null;
+    }
+
 }
