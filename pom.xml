@@ -42,7 +42,7 @@
         <jjwt.version>0.12.2</jjwt.version>
         <lombok.version>1.18.30</lombok.version>
         <jedis.version>5.1.0</jedis.version>
-        <checkstyle.version>3.2.2</checkstyle.version>
+        <checkstyle.version>3.3.1</checkstyle.version>
         <junit.version>5.10.1</junit.version>
         <testcontainers.version>1.19.3</testcontainers.version>
         <jacoco.version>0.8.11</jacoco.version>
