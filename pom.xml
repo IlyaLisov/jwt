@@ -44,7 +44,7 @@
         <jedis.version>5.1.0</jedis.version>
         <checkstyle.version>3.2.2</checkstyle.version>
         <junit.version>5.10.1</junit.version>
-        <testcontainers.version>1.19.3</testcontainers.version>
+        <testcontainers.version>1.19.4</testcontainers.version>
         <jacoco.version>0.8.11</jacoco.version>
     </properties>
     <dependencies>
