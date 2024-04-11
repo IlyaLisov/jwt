@@ -87,4 +87,16 @@ public interface TokenService {
             String token
     );
 
+    /**
+     * Returns claim of JWT token by its key.
+     *
+     * @param token JWT token
+     * @param key   key of claim
+     * @return value of claim or null if there is no value
+     */
+    Object claim(
+            String token,
+            String key
+    );
+
 }

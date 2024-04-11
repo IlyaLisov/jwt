@@ -1,7 +1,7 @@
 # JWT
 
 [![Lines-of-Code](https://tokei.rs/b1/github/ilyalisov/jwt)](https://github.com/ilyalisov/jwt)
-[![Hits-of-Code](https://hitsofcode.com/github/ilyalisov/jwt?branch=main)](https://hitsofcode.com/github/ilyalisov/jwt/view?branch=main)
+[![Hits-of-Code](https://hitsofcode.com/github/ilyalisov/jwt?branch=master)](https://hitsofcode.com/github/ilyalisov/jwt/view?branch=master)
 [![mvn](https://github.com/ilyalisov/jwt/actions/workflows/maven-build.yml/badge.svg)](https://github.com/ilyalisov/jwt/actions/workflows/maven-build.yml)
 
 [![codecov](https://codecov.io/gh/IlyaLisov/jwt/graph/badge.svg?token=OJR6TFQ2qr)](https://codecov.io/gh/IlyaLisov/jwt)
@@ -283,7 +283,7 @@ object.
 
 ```java
 public class Main {
-    public void main(String[] args) {
+    public static void main(String[] args) {
         String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
         Map<String, Object> claims = tokenService.claims(token);
