@@ -11,6 +11,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TokenServiceImplTests {
@@ -174,6 +175,57 @@ class TokenServiceImplTests {
         assertNotNull(claims);
         assertEquals("value1", claims.get("key1"));
         assertEquals(123, claims.get("key2"));
+    }
+
+    @Test
+    void shouldReturnCorrectClaimValue() {
+        String subject = "testSubject";
+        String type = "any";
+        Duration duration = Duration.ofMinutes(30);
+        Map<String, Object> customClaims = new HashMap<>();
+        customClaims.put("key1", "value1");
+        customClaims.put("key2", 123);
+
+        TokenParameters params = TokenParameters.builder(
+                        subject,
+                        type,
+                        duration
+                )
+                .claims(customClaims)
+                .build();
+
+        String token = tokenService.create(params);
+        Object claim = tokenService.claim(
+                token,
+                "key1"
+        );
+        assertNotNull(claim);
+        assertEquals("value1", claim);
+    }
+
+    @Test
+    void shouldReturnNull() {
+        String subject = "testSubject";
+        String type = "any";
+        Duration duration = Duration.ofMinutes(30);
+        Map<String, Object> customClaims = new HashMap<>();
+        customClaims.put("key1", "value1");
+        customClaims.put("key2", 123);
+
+        TokenParameters params = TokenParameters.builder(
+                        subject,
+                        type,
+                        duration
+                )
+                .claims(customClaims)
+                .build();
+
+        String token = tokenService.create(params);
+        Object claim = tokenService.claim(
+                token,
+                "notExistingKey"
+        );
+        assertNull(claim);
     }
 
 }
