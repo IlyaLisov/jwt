@@ -172,6 +172,20 @@ public class PersistentTokenServiceImpl implements PersistentTokenService {
     }
 
     @Override
+    public Object claim(
+            final String token,
+            final String key
+    ) {
+        Jws<Claims> claims = Jwts
+                .parser()
+                .verifyWith(this.key)
+                .build()
+                .parseSignedClaims(token);
+        return claims.getPayload()
+                .get(key);
+    }
+
+    @Override
     public boolean invalidate(
             final String token
     ) {

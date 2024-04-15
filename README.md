@@ -294,6 +294,25 @@ public class Main {
 
 ```
 
+### Get claim from JWT token
+
+To get claim by its name from JWT token payload call method `claim(String token, String key)`
+on `TokenService`
+object.
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+        String claim = (String) tokenService.claim(token, "subject");
+
+        System.out.println(claim);
+    }
+}
+
+```
+
 ## How to contribute
 
 See active issues at [issues page](https://github.com/ilyalisov/jwt/issues)
