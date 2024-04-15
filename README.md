@@ -21,6 +21,7 @@ JWT tokens in your Java applications.
     * [Get subject from token](#get-subject-from-jwt-token)
     * [Get type from token](#get-type-from-jwt-token)
     * [Get claims from token](#get-claims-from-jwt-token)
+    * [Get claim from tokem](#get-claim-from-jwt-token)
 * [How to contribute](#how-to-contribute)
 
 ## How to use
