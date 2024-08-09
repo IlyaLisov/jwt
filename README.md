@@ -35,7 +35,7 @@ With Maven add dependency to your `pom.xml`.
 <dependency>
     <groupId>io.github.ilyalisov</groupId>
     <artifactId>jwt</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
 </dependency>
 ```
 
