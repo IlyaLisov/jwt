@@ -47,6 +47,14 @@ A lightweight, production-ready Java library for JWT token management with built
 </dependency>
 ```
 
+**Gradle**:
+
+Add to your `build.gradle` or `build.gradle.kts`:
+
+```groovy
+implementation("io.github.ilyalisov:jwt:0.3.0")
+```
+
 ## Core Components
 
 ### Token Service
@@ -264,10 +272,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Contributing
 We welcome contributions! Please feel free to submit issues and enhancement requests.
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+To contribute, make a fork and open a pull request. You can find issues [here](https://github.com/ilyalisov/jwt/issues).
 
-**Active Issues**: Check our [issues page](https://github.com/ilyalisov/jwt/issues) for current tasks and bugs.
+Make sure, you follow project's codestyle.
