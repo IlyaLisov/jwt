@@ -1,37 +1,45 @@
-# JWT
+# JWT Java Library
 
-[![Lines-of-Code](https://tokei.rs/b1/github/ilyalisov/jwt)](https://github.com/ilyalisov/jwt)
-[![Hits-of-Code](https://hitsofcode.com/github/ilyalisov/jwt?branch=master)](https://hitsofcode.com/github/ilyalisov/jwt/view?branch=master)
-[![mvn](https://github.com/ilyalisov/jwt/actions/workflows/maven-build.yml/badge.svg)](https://github.com/ilyalisov/jwt/actions/workflows/maven-build.yml)
+[![Maven Build](https://github.com/ilyalisov/jwt/actions/workflows/maven-publish.yml/badge.svg)](https://github.com/ilyalisov/jwt/actions/workflows/maven-publish.yml)
+[![codecov](https://codecov.io/gh/ilyalisov/jwt/branch/main/graph/badge.svg)](https://codecov.io/gh/ilyalisov/jwt)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Maven Central](https://img.shields.io/maven-central/v/io.github.ilyalisov/jwt)
 
-[![codecov](https://codecov.io/gh/IlyaLisov/jwt/graph/badge.svg?token=OJR6TFQ2qr)](https://codecov.io/gh/IlyaLisov/jwt)
+A lightweight, production-ready Java library for JWT token management with built-in Redis support, token persistence, and comprehensive validation features.
 
-This repository is an open-source Java library for fast and convenient using of
-JWT tokens in your Java applications.
+## Table of Contents
+- [Features](#features)
+- [Quick Start](#quick-start)
+  - [Installation](#installation)
+- [Core Components](#core-components)
+  - [Token Service](#token-service)
+  - [Token Storage](#token-storage)
+  - [Token Parameters](#token-parameters)
+- [Usage Examples](#usage-examples)
+  - [Basic Token Operations](#basic-token-operations)
+  - [Persistent Token Storage](#persistent-token-storage)
+  - [Redis Integration](#redis-integration)
+  - [Token Validation](#token-validation)
+- [API Reference](#api-reference)
+- [Configuration](#configuration)
+- [License](#license)
+- [Contributing](#contributing)
 
-## Content:
+## Features
+- **Simple JWT Management**: Create, validate, and parse JWT tokens with minimal configuration
+- **Persistent Storage**: Built-in support for in-memory and Redis token storage
+- **Token Invalidation**: Programmatic token revocation with multiple invalidation strategies
+- **Comprehensive Validation**: Check expiration, claims, subjects, and token types
+- **Flexible Token Parameters**: Custom claims, issuance dates, and expiration configurations
+- **Production Ready**: Thread-safe implementations with comprehensive test coverage
+- **Zero Dependencies**: Self-contained with minimal external dependencies (except Redis client)
 
-* [How to use](#how-to-use)
-    * [Instantiate a service](#instantiate-a-service)
-    * [Persist tokens](#persist-tokens)
-    * [Invalidate token](#invalidate-jwt-token)
-    * [Create token](#create-jwt-token)
-    * [If token is expired](#check-if-jwt-token-is-expired)
-    * [If token has claim](#check-if-jwt-token-has-claim)
-    * [Get subject from token](#get-subject-from-jwt-token)
-    * [Get type from token](#get-type-from-jwt-token)
-    * [Get claims from token](#get-claims-from-jwt-token)
-    * [Get claim from tokem](#get-claim-from-jwt-token)
-* [How to contribute](#how-to-contribute)
+## Quick Start
 
-## How to use
+### Installation
 
-At first, you need to install this library.
-
-With Maven add dependency to your `pom.xml`.
-
+**Maven:**
 ```xml
-
 <dependency>
     <groupId>io.github.ilyalisov</groupId>
     <artifactId>jwt</artifactId>
@@ -39,281 +47,231 @@ With Maven add dependency to your `pom.xml`.
 </dependency>
 ```
 
-This library provides simple and convenient usage.
+**Gradle**:
 
-### Instantiate a service
+Add to your `build.gradle` or `build.gradle.kts`:
 
-You need to create `TokenService` object and pass `secret` (base64 encoded
-secret string for
-JWT tokens) to the constructor.
+```groovy
+implementation("io.github.ilyalisov:jwt:0.3.0")
+```
+
+## Core Components
+
+### Token Service
+The core interface for JWT operations with two implementations:
+
+**TokenServiceImpl** - Basic JWT operations without persistence:
+```java
+String secret = "c29tZWxvbmdzZWNyZXRzdHJpbmdmb3JleGFtcGxlYW5kaXRuZWVkc3RvYmVsb25nDQo=";
+TokenService tokenService = new TokenServiceImpl(secret);
+```
+
+**PersistentTokenServiceImpl** - JWT operations with token storage and invalidation:
+```java
+TokenService tokenService = new PersistentTokenServiceImpl(secret);
+```
+
+### Token Storage
+Flexible storage implementations for different use cases:
+
+- **TokenStorageImpl**: In-memory storage (default)
+- **RedisTokenStorageImpl**: Redis-backed persistent storage
+- **Custom implementations**: Implement `TokenStorage` interface for custom storage solutions
+
+### Token Parameters
+Builder pattern for configuring JWT tokens:
 
 ```java
-public class Main {
-    public static void main(String[] args) {
-        String secret = "c29tZWxvbmdzZWNyZXRzdHJpbmdmb3JleGFtcGxlYW5kaXRuZWVkc3RvYmVsb25nDQo=";
+TokenParameters params = TokenParameters.builder(
+        "user@example.com",      // subject
+        "access",                // token type
+        Duration.ofHours(1)      // expiration
+    )
+    .claim("role", "ADMIN")      // custom claims
+    .issuedAt(new Date())        // issuance date
+    .build();
+```
 
-        TokenService tokenService = new TokenServiceImpl(secret);
+## Usage Examples
+
+### Basic Token Operations
+
+**Create a JWT token:**
+```java
+String token = tokenService.create(
+    TokenParameters.builder(
+            "user@example.com",
+            "access",
+            Duration.ofHours(1)
+        )
+        .claim("role", "ADMIN")
+        .build()
+);
+```
+
+**Validate token expiration:**
+```java
+boolean expired = tokenService.isExpired(token);
+// Or with custom validation date
+boolean expired = tokenService.isExpired(token, new Date());
+```
+
+**Check token claims:**
+```java
+boolean hasRole = tokenService.has(token, "role", "ADMIN");
+```
+
+**Extract token information:**
+```java
+String subject = tokenService.getSubject(token);
+String type = tokenService.getType(token);
+Map<String, Object> claims = tokenService.claims(token);
+Object role = tokenService.claim(token, "role");
+```
+
+### Persistent Token Storage
+
+**In-memory storage (default):**
+```java
+PersistentTokenService tokenService = new PersistentTokenServiceImpl(secret);
+```
+
+**Invalidate tokens:**
+```java
+// Invalidate by token value
+boolean deleted = tokenService.invalidate(token);
+
+// Invalidate by subject and type
+boolean deleted = tokenService.invalidate(
+    TokenParameters.builder(
+            "user@example.com",
+            "access",
+            Duration.ZERO
+        )
+        .build()
+);
+```
+
+### Redis Integration
+
+**Basic Redis setup:**
+```java
+TokenStorage tokenStorage = new RedisTokenStorageImpl("localhost", 6379);
+PersistentTokenService tokenService = new PersistentTokenServiceImpl(secret, tokenStorage);
+```
+
+**Advanced Redis configuration:**
+```java
+// With authentication
+TokenStorage tokenStorage = new RedisTokenStorageImpl(
+    "localhost", 
+    6379, 
+    "username", 
+    "password"
+);
+
+// With custom Redis key schema
+RedisSchema customSchema = (subject, type) -> "app:tokens:" + subject + ":" + type;
+TokenStorage tokenStorage = new RedisTokenStorageImpl(
+    "localhost", 
+    6379, 
+    customSchema
+);
+
+// With existing Jedis pool
+JedisPool jedisPool = new JedisPool("localhost", 6379);
+TokenStorage tokenStorage = new RedisTokenStorageImpl(jedisPool);
+```
+
+### Token Validation
+
+**Complete validation workflow:**
+```java
+public boolean validateToken(String token) {
+    // Check if token exists (for persistent storage)
+    if (tokenService instanceof PersistentTokenService) {
+        if (!((PersistentTokenService) tokenService).exists(token)) {
+            return false;
+        }
     }
+    
+    // Validate expiration
+    if (tokenService.isExpired(token)) {
+        return false;
+    }
+    
+    // Validate required claims
+    if (!tokenService.has(token, "role", "USER")) {
+        return false;
+    }
+    
+    // Validate token type
+    if (!"access".equals(tokenService.getType(token))) {
+        return false;
+    }
+    
+    return true;
 }
 ```
 
-After, you can call available methods and use library.
+## API Reference
 
-### Persist tokens
+### TokenService Interface
+| Method | Description | Returns |
+|--------|-------------|---------|
+| `create(TokenParameters)` | Creates a new JWT token | `String` |
+| `isExpired(String)` | Checks if token is expired | `boolean` |
+| `isExpired(String, Date)` | Checks if token was expired at specific date | `boolean` |
+| `has(String, String, Object)` | Checks if token contains specific claim | `boolean` |
+| `getSubject(String)` | Extracts subject from token | `String` |
+| `getType(String)` | Extracts type from token | `String` |
+| `claims(String)` | Returns all token claims | `Map<String, Object>` |
+| `claim(String, String)` | Returns specific claim | `Object` |
 
-Library supports `PersistentTokenService` implementation with saving
-tokens to `TokenStorage`.
+### PersistentTokenService Interface (extends TokenService)
+| Method | Description | Returns |
+|--------|-------------|---------|
+| `invalidate(String)` | Invalidates token by value | `boolean` |
+| `invalidate(TokenParameters)` | Invalidates token by subject and type | `boolean` |
+| `exists(String)` | Checks if token exists in storage | `boolean` |
 
-With such approach you can store tokens in Redis or in-memory Map and create new
-one if no specified tokens exist, otherwise, stored JWT token would be returned.
+## Configuration
 
-This approach allows you to invalidate created and stored JWT token.
-
-For this look at `TokenStorage` class. Use `TokenStorageImpl` for in-memory
-storage (default) and `RedisTokenStorageImpl` for Redis storage.
-
+### Secret Key
+The library requires a Base64-encoded secret string. Generate one using:
 ```java
-public class Main {
-    public static void main(String[] args) {
-        String secret = "c29tZWxvbmdzZWNyZXRzdHJpbmdmb3JleGFtcGxlYW5kaXRuZWVkc3RvYmVsb25nDQo=";
+import java.util.Base64;
 
-        TokenService tokenService = new PersistentTokenServiceImpl(secret);
-    }
-}
+String secret = Base64.getEncoder().encodeToString(
+    "some-long-secret-string-for-example-and-it-needs-to-be-long".getBytes()
+);
 ```
 
-With Redis you need to pass `RedisTokenStorageImpl` object to constructor.
+### Redis Configuration
+For production Redis deployments, consider:
+- Connection pooling configuration
+- SSL/TLS encryption
+- Redis cluster support
+- Sentinel configuration for high availability
 
-To create `RedisTokenStorageImpl` you need to pass `JedisPool` / host and port /
-host, port, username and password.
-
+### Token Expiration Strategies
 ```java
-public class Main {
-    public static void main(String[] args) {
-        String secret = "c29tZWxvbmdzZWNyZXRzdHJpbmdmb3JleGFtcGxlYW5kaXRuZWVkc3RvYmVsb25nDQo=";
-        String host = "localhost";
-        int port = 6379;
+// Short-lived access tokens
+Duration accessTokenExpiry = Duration.ofMinutes(30);
 
-        TokenStorage tokenStorage = new RedisTokenStorageImpl(
-                host,
-                port
-        );
+// Long-lived refresh tokens
+Duration refreshTokenExpiry = Duration.ofDays(7);
 
-        PersistentTokenService tokenService = new PersistentTokenServiceImpl(
-                secret,
-                tokenStorage
-        );
-    }
-}
+// One-time use tokens
+Duration oneTimeTokenExpiry = Duration.ofMinutes(10);
 ```
 
-You can choose your own `RedisSchema` which is used to generate a Redis key for
-JWT token. Just pass it as argument in `RedisTokenStorageImpl` constructor.
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-By default, library uses key `"tokens:" + subject + ":" + type`.
+## Contributing
+We welcome contributions! Please feel free to submit issues and enhancement requests.
 
-### Invalidate JWT token
+To contribute, make a fork and open a pull request. You can find issues [here](https://github.com/ilyalisov/jwt/issues).
 
-With `PersistentTokenService` you can invalidate token by token itself or by
-subject and token type. If first option is chosen, all keys with such token
-values will be deleted.
-
-If token will be deleted from storage you receive `true`.
-
-```java
-public class Main {
-    public static void main(String[] args) {
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-
-        boolean deleted = persistentTokenService.invalidate(token);
-
-        System.out.println(deleted);
-    }
-}
-```
-
-```java
-public class Main {
-    public static void main(String[] args) {
-        boolean deleted = persistentTokenService.invalidate(
-                TokenParameters.builder(
-                                "user@example.com",
-                                "access",
-                                Duration.of(1, ChronoUnit.HOURS)
-                        )
-                        .build()
-        );
-
-        System.out.println(deleted);
-    }
-}
-```
-
-### Create JWT token
-
-To create token call method `create(TokenParameters params)` on `TokenService`
-object.
-
-```java
-public class Main {
-    public static void main(String[] args) {
-        String token = tokenService.create(
-                TokenParameters.builder(
-                                "user@example.com",
-                                "access",
-                                Duration.of(1, ChronoUnit.HOURS)
-                        )
-                        .build()
-        );
-
-        System.out.println(token);
-    }
-}
-```
-
-You can specify in `TokenParameters`:
-
-* claims to be put in JWT token
-* JWT token issuing date
-* JWT token expiration date
-* "sub" of JWT token
-* type of JWT token
-
-This all is configured via `TokenParameters` builder.
-
-### Check if JWT token is expired
-
-To check if JWT token is expired call method `isExpired(String token)`
-on `TokenService` object.
-
-```java
-class Main {
-    public static void main(String[] args) {
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-
-        boolean expired = tokenService.isExpired(token);
-
-        System.out.println(expired);
-    }
-}
-```
-
-You can also check expiration with any other date.
-
-```java
-class Main {
-    public static void main(String[] args) {
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-        Date date = new Date(1705911211182);
-
-        boolean expired = tokenService.isExpired(
-                token,
-                date
-        );
-
-        System.out.println(expired);
-    }
-}
-```
-
-### Check if JWT token has claim
-
-To check if JWT token has claim in payload call
-method `has(String token, String key, Object value)` on `TokenService` object.
-
-```java
-class Main {
-    public static void main(String[] args) {
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-        String key = "subject";
-        String value = "1234567890";
-
-        boolean hasSubject = tokenService.has(
-                token,
-                key,
-                value
-        );
-
-        System.out.println(hasSubject);
-    }
-}
-```
-
-### Get subject from JWT token
-
-To get subject from JWT token payload call method `getSubject(String token)`
-on `TokenService` object.
-
-**Note:** Optionally, you can call
-method `claims(token).get("sub").toString()` on `TokenService` object.
-
-```java
-public class Main {
-    public static void main(String[] args) {
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-
-        String subject = tokenService.getSubject(token);
-
-        System.out.println(subject);
-    }
-}
-```
-
-### Get type from JWT token
-
-To get type from JWT token payload call method `getType(String token)`
-on `TokenService` object.
-
-```java
-public class Main {
-    public static void main(String[] args) {
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-
-        String subject = tokenService.getType(token);
-
-        System.out.println(subject);
-    }
-}
-```
-
-### Get claims from JWT token
-
-To get all claims from JWT token payload call method `claims(String token)`
-on `TokenService`
-object.
-
-```java
-public class Main {
-    public static void main(String[] args) {
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-
-        Map<String, Object> claims = tokenService.claims(token);
-
-        claims.forEach((key, value) -> System.out.println(key + " " + value));
-    }
-}
-
-```
-
-### Get claim from JWT token
-
-To get claim by its name from JWT token payload call method `claim(String token, String key)`
-on `TokenService`
-object.
-
-```java
-public class Main {
-    public static void main(String[] args) {
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-
-        String claim = (String) tokenService.claim(token, "subject");
-
-        System.out.println(claim);
-    }
-}
-
-```
-
-## How to contribute
-
-See active issues at [issues page](https://github.com/ilyalisov/jwt/issues)
+Make sure, you follow project's codestyle.
